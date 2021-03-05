@@ -1,0 +1,96 @@
+//Cotoi Victorita Marinela - grupa 312CA
+
+In rezolvarea acestei teme am folosit alocarea dinamica, atat pentru a stoca in
+memorie in matrici imaginile pgm si ppm cat si pentru a lucra cu anumite 
+sectiuni din aceste imagini in matrici auxiliare.
+Programul porneste la citirea primei comenzi si se intrerupe la citirea 
+comenzii "EXIT", care elibereaza complet memoria alocata.
+
+LOAD
+
+Daca comanda incepe cu secventa "LOAD" se efectueaza alocarea memoriei dinamic 
+pentru array, matricea principala, in care se va stoca imaginea si pe care se 
+va lucra. Array va avea dimensiunile P[0].height si P[0].width, extrase din 
+fisier si salvate in structura P, valoarea maxima reprezentata de 
+P[0].max_value si va fi de tipul P[0].type. 
+Functia LOAD incarca in memorie toate aceste date, si le returneaza in 
+functia main a programului.
+Daca deja exista o imagine incarcata in memorie, se va dealoca memoria 
+folosita de aceasta si va fi realocata pentru noua imagine.
+
+SELECT
+
+Daca comanda incepe cu secventa "SELECT" iar in memorie este incarcata o 
+imagine, se apeleaza functia select_file. Aceasta extrage din comanda 
+coordonatele, le valideaza si eventual le interschimba pentru a fi in 
+ordine crescatoare, iar daca acestea sunt valide, citeste comenzi si le 
+efectueaza pe zona din imagine selectata. 
+Daca in cadrul functiei select_file se reapeleaza comanda SELECT cu alte 
+coordonate, functia va fi apelata recursiv. Daca al doilea set de coordonate 
+este valid, se efectueaza comenzi pentru zona determinata de acestea, iar 
+apoi se returneaza matricea imagine in functia main a programului. Daca 
+in schimb, al doilea set de coordonate nu este valid, se continua desfasurarea
+comenzilor pe ultima zona selectata valida. 
+Daca in cadrul functiei select_file se apeleaza comenzile "SELECT ALL",
+"EXIT" sau "LOAD", functia returneaza matricea iar comenzile se efectueaza 
+in functia main a programului.
+
+ROTATE
+
+Daca comanda incepe cu secventa "ROTATE" si nu exista o zona anterior selectata,
+se apeleaza functia rotate_full_image. Aceasta functie extrage unghiul pentru care
+se cere rotirea imaginii, si apeleaza functia corespunzatoare acestuia. Pentru
+rotirea cu un unghi de 90 a intregii imagini am creat doua functii, una pentru 
+imagini colore, de tip P3/P6 , numite rotate90color_image si una pentru imagini de
+tip P2/P5, numita rotate90_image. Fiecare functie foloseste o matrice auxiliara
+unde se copiaza matricea principala, dealoca si realoca matricea principala cu noi
+dimensiuni corespunzatoare selectiei, si copieaza in aceasta matricea rotita. La 
+final, se elibereaza memoria alocata pentru matricea auxiliara si se returneaza
+matricea principala rotita. Pentru rotirea cu un unghi de 180 sau -180 de grade, 
+se apeleaza rotate180_image, care rearanjeaza elementele matricei principala
+astfel incat aceasta sa se roteaza. Pentru un unghi de 270/-270 se apeleaza
+functiile pentru rotirea cu 90/-90 corespunzator, caci rotate -270 = rotate 90 si
+invers.
+Daca comanda incepe cu secventa "ROTATE" si exista o zona anterior selectata, se
+apeleaza functia rotate_image. In plus fata de functia rotate_full_image,
+rotate_image verifica daca zona pe care se cere rotirea imaginii este patratica. 
+Daca da, se apeleaza functii de rotire cu un unghi de 90/-90 corespunzator:
+rotate90 pentru imagini de tip P2/P5 si rotate90color pentru imagini de tip P3/P6. 
+Pentru unghiuri de 180/270 se apeleaza functiile pentru rotirea cu 90 de grade de 
+mai multe ori.
+
+CROP
+
+Daca comanda este "CROP", se apeleaza functia crop_file, care foloseste o matrice
+auxiliara pentru a copia imaginea, dealoca si realoca matricea principala pentru a 
+avea noi dimensiuni corespunzatoare zonei selectate, si copiaza selectia in matricea 
+principala, pe care o returneaza modificata, cu noi dimensiuni.
+
+GRAYSCALE
+
+Daca comanda este "GRAYSCALE", se apeleaza functia grayscale_filter, care face 
+modificari pe matricea ce contine imaginea, conform formulei 
+newRed = newGreen = newBlue = (Red + Greed + Blue) / 3. 
+Modificarile se realizeaza doar pentru imagini de tipul P3/P6.
+
+SEPIA
+
+Daca comanda este "SEPIA", se apeleaza functia sepia_filter, care face 
+modificari pe matricea ce contine imaginea, comform formulelor date, 
+aplicandu-le pe fiecare pixel. Modificarile se realizeaza doar pentru 
+imagini de tipul P3/P6.
+
+
+SAVE
+
+Daca comanda este "SAVE", se apeleaza functia save_file, care salveaza 
+imaginea in fisierul dat. Fisierul unde trebuie salvata imaginea este 
+extras din comanda si se verifica si existenta parametrului "ascii" in 
+aceasta. Daca exista si acest paramentru, imaginea se salveaza in format 
+ASCII in fisierul dat, iar daca nu exista, imaginea se salveaza in format 
+binar in fisierul dat.
+
+EXIT
+
+Dealoca matricea principala si determina oprirea programului
+
